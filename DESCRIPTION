@@ -23,7 +23,9 @@ Imports:
     jsonlite,
     scales,
     shiny,
-    shinythemes
+    shinythemes,
+    plotly,
+    ggimage
 Depends:
     R (>= 2.10)
 lazyData: true

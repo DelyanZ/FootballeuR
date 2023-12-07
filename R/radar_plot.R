@@ -21,7 +21,7 @@ radar_plot <- function(df){
   attaquants <- aggregate(attaquants$`df$shot$statsbomb_xg`, by=list(attaquants$player), FUN=sum)
 
   ## Dribbles réussis par attaquant
-  dribble = cbind(df[c("type","position","player")],df$pass$outcome)
+  dribble = cbind(df[c("type","position","player")],df$dribble$outcome)
   dribble = dribble %>% filter(type == "Dribble" & (position %like% "Forward" | position %like% "Wing") & dribble$`df$dribble$outcome` == "Complete")
   dribble = aggregate(dribble$`df$dribble$outcome`, by=list(dribble$player), FUN=length)
 
