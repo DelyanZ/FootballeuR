@@ -32,11 +32,12 @@ funnel_plot = function(df){
     filter(Group.2 == "Saved" | Group.2 == "Goal")
   tir_cadres = tir_cadres[,-2]
   tir_cadres = aggregate(tir_cadres$x,by=list(tir_cadres$Group.1), FUN=sum)
-  tir_cadres = check_missing(tir_cadres$Group.1,df,tir_cadres)
+  tir_cadres = check_missing(tir_cadres[,1],df,tir_cadres)
   colnames(tir_cadres) = c("team", "nb")
 
   # Récupérer les tirs non-cadrés par équipe
   tir_n_cadres = data.frame(tir$team,(tir$nb-tir_cadres$nb))
+  tir_n_cadres = check_missing(tir_n_cadres[,1],df,tir_n_cadres)
   colnames(tir_n_cadres) = c("team","nb")
 
   # Récupérer les tirs bloqués par équipe
@@ -46,6 +47,7 @@ funnel_plot = function(df){
   tir_bloque = tir_bloque %>%
     filter(Group.2 == "Blocked")
   tir_bloque = tir_bloque[,-2]
+  tir_bloque = check_missing(tir_bloque[,1],df,tir_bloque)
   colnames(tir_bloque) = c("team", "nb")
 
   # Récupérer les coups francs par équipe
@@ -53,29 +55,32 @@ funnel_plot = function(df){
     filter(type == "Shot" | type == "Pass")
   cf = cf[which(cf$shot$type =="Free Kick" | cf$pass$type == "Free Kick"),"team"]
   cf = aggregate(cf,by=list(cf), FUN=length)
+  cf = check_missing(cf[,1],df,cf)
   colnames(cf) = c("team", "nb")
 
   # Récupérer les corners par équipe
   corner = df[which(df$pass$type == "Corner"),"team"]
   corner = aggregate(corner,by=list(corner), FUN=length)
+  hors_jeu = check_missing(corner[,1],df,corner)
   colnames(corner) = c("team", "nb")
 
   # Récupérer les hors-jeu par équipe
   hors_jeu = df[which(df$pass$outcome == "Pass Offside"),"team"]
   hors_jeu = aggregate(hors_jeu,by=list(hors_jeu), FUN=length)
-  hors_jeu = check_missing(hors_jeu$Group.1,df,hors_jeu)
+  hors_jeu = check_missing(hors_jeu[,1],df,hors_jeu)
   colnames(hors_jeu) = c("team", "nb")
 
   # Récupérer les sauvetages du gardien par équipe
   GK_save = df[which(df$shot$outcome == "Saved"),"team"]
   GK_save = aggregate(GK_save,by=list(GK_save), FUN=length)
   GK_save = check_missing(GK_save$Group.1,df,GK_save)
+  Gk_save = check_missing(GK_save[,1],df,GK_save)
   colnames(GK_save) = c("team", "nb")
 
   # Contruction du dataframe utilisé pour contruire le graphique
-  label = c(rep("Possession",2),rep("Tirs au but",2),rep("Tirs cadrés",2),rep("Tirs non cadrés",2),
+  label = c(rep("Tirs au but",2),rep("Tirs cadrés",2),rep("Tirs non cadrés",2),
             rep("Tirs bloqués",2),rep("Coup Francs",2),rep("Corners",2),rep("Hors-Jeu",2),rep("Sauvetages du gardien",2))
-  funnel = rbind(possessions,tir,tir_cadres,tir_n_cadres,tir_bloque,cf,corner,hors_jeu,GK_save)
+  funnel = rbind(tir,tir_cadres,tir_n_cadres,tir_bloque,cf,corner,hors_jeu,GK_save)
   funnel = cbind(funnel,label)
 
   funnel$nb = funnel$nb * 10^5
@@ -93,7 +98,10 @@ funnel_plot = function(df){
     labs(title = "",x="",y="") +
     coord_flip() +  # Flip axes
     theme_tufte() +
-    theme(axis.ticks = element_blank()) +
+    theme(
+      axis.ticks = element_blank(),
+      axis.text.x = element_text(size = 12)
+      ) +
     scale_fill_manual(values = couleurs_team)
 }
 

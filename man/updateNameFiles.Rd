@@ -4,19 +4,19 @@
 \alias{updateNameFiles}
 \title{Update names of few dataframes}
 \usage{
-updateNameFiles(DFs, col)
+updateNameFiles(df, col)
 }
 \arguments{
-\item{DFs}{A list of dataframes}
+\item{DFs}{A dataframe}
 
 \item{colonne}{A columns of the dataframe}
 }
 \value{
-A list of the names of the dataframes
+A name
 }
 \description{
 Update names of few dataframes
 }
 \examples{
-updateNameFiles(`../data`,"team")
+updateNameFiles(df1,"team")
 }

@@ -17,11 +17,13 @@ app<-function(...){
   library(ggthemes)
 
   data("competition")
-  data("df1")
-  data("df2")
-  data("df3")
-  data("df4")
-  data("df5")
+  names_df = c()
+  for(df in paste0("df",1:5)){
+    data(df)
+    assign(df, supCol_by_names(get(df),c("id","index","related_events")))
+    names_df = c(names_df,updateNameFiles(get(df),"team"))
+  }
+
   # for(i in 1:50){
   #   data(i)
   # }
@@ -32,20 +34,22 @@ app<-function(...){
                    tags$div(tags$img(src="assets/StatsBomb_R_Hex.svg", width = 108, height = 108,
                                      style="float:left; margin-left: 5px; margin-right: 5px; margin-top: -15px")),
                    tabPanel("Match",
+                            mainPanel(textOutput("texte_Match1")),
                             fluidRow(
-                              column(9,wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 720px;",plotOutput("plot", height = 500),
-                                                 plotOutput("funnel",height = 500)),
+                              column(9,wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 720px;",
+                                                 plotOutput("plot", height = 500),
+                                                 DTOutput("table_lineup")),
                               ),
                               column(3,
                                      fluidRow(
                                        column(12,
                                               wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 250px;",
-                                                        selectInput("dataset3",label = "Choix du match", choices = paste0("df",1:5) ,width = '100%')
+                                                        selectInput("dataset3",label = "Choix du match", choices = names_df ,width = '100%')
                                               )
                                         ),
                                        column(12,
                                               wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 450px;",
-                                                        DTOutput("table_lineup")
+                                                        plotOutput("funnel",height = 200)
 
                             )))))),
                    tabPanel("Visualisation",
@@ -124,6 +128,11 @@ app<-function(...){
   )
   server <- function(input, output, session) {
 
+    # Onglet Match
+    output$test_Match1 <- renderText({
+      "Match opposant Barcelone à Deportivo Alavés"
+    })
+
     tbl <- reactive({
       data(input$dataset2)
       supCol_by_names(get(input$dataset2),c("id","index","related_events"))})
@@ -187,26 +196,27 @@ app<-function(...){
     # ext = cbind(get(input$dataset)$tactics$lineup[[2]][3],get(input$dataset)$tactics$lineup[[2]][1]$player$name),
     # colnames(ext) = c("Numéro","Joueur"),
 
-    # tbl2 <- reactive({
-    #   dom = cbind(get(input$dataset)$tactics$lineup[[1]][3],get(input$dataset)$tactics$lineup[[1]][1]$player$name)
-    # })
+    tbl2 <- reactive({
+      dom = cbind(get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[1]][3],get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[1]][1]$player$name)
+    })
     # tbl3 <- reactive({
     #   ext = cbind(get(input$dataset)$tactics$lineup[[2]][3],get(input$dataset)$tactics$lineup[[2]][1]$player$name)
     # })
-    # output$table_lineup <- renderDT(datatable(tbl2(), caption = "Equipe domcile"))
+    output$table_lineup <- renderDT(datatable(tbl2(),
+                                              caption = "Equipe domcile",
+                                              ))
 
     # data_lineup <- reactive({
     #   data(input$data)
     #   supCol_by_names(get(input$data),c("id","index","related_events"))})
 
     output$plot <- renderPlot({
-      data(input$dataset3)
-      data = supCol_by_names(get(input$dataset3),c("id","index","related_events"))
+      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
       get_lineups(data)
       })
 
     output$funnel <- renderPlot({
-      data = supCol_by_names(get(input$dataset3),c("id","index","related_events"))
+      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
       funnel_plot(data)
       })
 
