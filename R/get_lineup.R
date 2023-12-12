@@ -24,17 +24,14 @@ get_lineups = function(df){
     geom_text(
       data = rbind(domicile[,3:5],exterieur[,3:5]),
       aes(x = x, y = y, label = jersey_number),
-      size = 3.5,   # Taille du texte
-      vjust = 0.25,  # Ajustement vertical
-      hjust = 0.5   # Ajustement horizontal
+      size = 3.5,
+      vjust = 0.25,
+      hjust = 0.5
     ) +
-    labs(title=paste0(df$team[1], " VS ", df$team[2]),
+    labs(title=paste0("Composition d'équipe : ",df$team[1], " VS ", df$team[2]),
          subtitle="La Liga 2017/2018",
          caption="Data Source: StatsBomb")
   plot1
-
-  # # Interactive plot
-  # ggplotly(plot1)
 }
 
 #' Get the coordinates of players according the formation
@@ -59,7 +56,7 @@ formation_coord = function(formation){
     x = c(3, 15, 15, 15, 15, 35, 35, 35, 50, 55, 50)
     y = c(40, 10, 30, 50, 70, 20, 40, 60, 10,70,40)
   }else if(formation == "352"){
-    x = c(3, 15, 15, 15, 25, 25, 25, 35, 35, 55, 55)
+    x = c(3, 15, 15, 15, 25, 25, 35, 45, 45, 55, 55)
     y = c(40, 20, 40, 60, 10, 70, 40, 30, 50, 30, 50)
   }
   return(cbind(x,y))

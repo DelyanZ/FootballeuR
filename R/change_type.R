@@ -17,9 +17,6 @@ change_type <- function(col,name_col){
     else{
       # Demander l'aide de l'utlisateur
       type = readline(paste0("Quel type souhaitez vous pour la variable ",name_col, " : "))
-      # paste0("Quel type souhaitez vous pour la variable ",names(test[1]), "/n",
-      #        "Sachant qu'elle contient : ", length(unique(test[1])),"modalités.", "/n",
-      #        "Alors ? ")
       col = change_type_user(type,col)
       return(col)
     }

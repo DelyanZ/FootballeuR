@@ -10,7 +10,6 @@
 heatmap_player = function(df,name_player){
   player_data = df %>%
     filter(player == name_player)
-  # player_data = df[with(df,player$name ==name_player),]
   x = sapply(player_data$location, `[`, 1)
   y = sapply(player_data$location, `[`, 2)
 

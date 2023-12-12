@@ -7,15 +7,15 @@
 #'
 #' @examples load_packages(c("dplyr", "ggplot2"))
 load_packages <- function(packages) {
-  # Check if packages are already installed
+  # Reagarder si des packages ne sont pas déjà installés
   new_packages <- setdiff(packages, rownames(installed.packages()))
 
-  # Install new packages
+  # Installer UNIQUEMENT les nouveaux packages
   if (length(new_packages) > 0) {
     install.packages(new_packages)
   }
 
-  # Load the packages
+  # Charger les packages
   for (pkg in packages) {
     library(pkg, character.only = TRUE, quietly = TRUE)
   }
