@@ -38,7 +38,7 @@ app<-function(...){
                             fluidRow(
                               column(9,
                                      wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 720px;",
-                                     fluidRow(column(12,p(tags$b("Composition des équipes", style = "font-size: 150%")),align = "center")),# fluidRow(column(12,textOutput("texte_Match1"),align = "center")),
+                                     fluidRow(column(12,p(tags$b("Composition des équipes", style = "font-size: 150%")),align = "center")),
                                      fluidRow(
                                        column(3,
                                               DTOutput("table_lineup")),
@@ -67,7 +67,7 @@ app<-function(...){
                    tabPanel("Visualisation",
                             fluidRow(
                               column(9,wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 720px;",
-                                                 uiOutput("titre_plot_viz"),# fluidRow(column(12,p(tags$b(textOutput("titre_plot_viz"), style = "font-size: 150%")),align = "center")),
+                                                 uiOutput("titre_plot_viz"),
                                                  br(),
                                                  plotOutput("plot1", height = 500, click="plot_click1"))),
                               column(3,
@@ -101,32 +101,24 @@ app<-function(...){
                                                                                        "Heatmap par joueur"),
                                                                            selected = 0),
                                                                uiOutput("joueur")
-                                                               # selectInput("joueurInput", "Sélectionnez un joueur"),choices = unique(df1$player$name)[-1],selected = unique(df1$player$name)[2])
                                      )))
                               ))),
                    tabPanel("Data Events",
                             fluidRow(
                               column(9,wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 720px;",
-                                                 # selectInput(inputId = "events",
-                                                 #             label = NULL,
-                                                 #             choices = sort(unique(tbl["type"])),
-                                                 #             selected = latest),
                                                  uiOutput("colSelction"),
-                                                 # selectInput("colSelected",label = "Selection colonnes", choices = names(df1), multiple = TRUE),
                                                  DTOutput("table"))),
                               column(3,
                                      fluidRow(column(12,
                                                      wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 250px;",
                                                                p(tags$em("Choisissez un jeu de données pour avoir plus d'informations.", style = "font-size: 100%; font-family:Helvetica; color:#4c4c4c"),
-                                                                 style = "text-align:left; margin-bottom: 15px;"),selectInput("dataset2", label = "Dataset", choices = names_df ,width = '100%'))), # new_names_files #`data/events`
+                                                                 style = "text-align:left; margin-bottom: 15px;"),selectInput("dataset2", label = "Dataset", choices = names_df ,width = '100%'))),
                                               fluidRow(column(12,
                                                               wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 450px; margin-left: 12px; margin-right: 12px;",
                                                                         p(tags$b("Nombre de lignes:", style = "font-size: 102%")),
                                                                         p(tags$b("Nombre de colonnes:", style = "font-size: 102%")),
                                                                         htmlOutput("nrow_col")
-
                                                               )))
-
                                      ))
                             )
                    ),
@@ -140,12 +132,68 @@ app<-function(...){
   server <- function(input, output, session) {
 
     # Onglet Match
-    output$texte_Match1 <- renderText({
-      match = input$dataset3
-      match = paste0("<b style='font-size: 18px;'>",match,"</b>")
-      HTML(match)
+
+    ## Permet d'obetenir la composition de l'équipe domicile
+    tbl2 <- reactive({
+      dom = cbind(get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[1]][3],get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[1]][1]$player$name)
+      colnames(dom) = c("Numéros", "Joueurs")
+      dom
     })
 
+    ## Permet d'afficher la composition de l'équipe domicile dans un tableau
+    output$table_lineup <- renderDT(datatable(tbl2(),
+                                              caption = "Equipe domcile",
+                                              rownames = FALSE,
+                                              options = list(
+                                                pageLength = 11,
+                                                stripe = FALSE,
+                                                dom = 't'),
+                                              callback = JS('table.on("init.dt", function() {
+                                                $(".dataTables_wrapper").css({
+                                                  "border": "4px solid #000000",
+                                                  "font-family": "Arial, sans-serif",
+                                                  "font-size": "12px",
+                                                  "font-weight": "bold",
+                                                  "color": "#000000",
+                                                  "text-align": "center"
+                                                });
+                                              })')
+    ))
+
+    ## Permet d'afficher les compositions d'équipes
+    output$plot <- renderPlot({
+      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
+      get_lineups(data)
+    })
+
+    ## Permet d'obetenir la composition de l'équipe extérieure
+    tbl3 <- reactive({
+      ext = cbind(get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[2]][3],get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[2]][1]$player$name)
+      colnames(ext) = c("Numéros", "Joueurs")
+      ext
+    })
+
+    ## Permet d'afficher la composition de l'équipe extérieure dans un tableau
+    output$table_lineup2 <- renderDT(datatable(tbl3(),
+                                               caption = "Equipe extérieur",
+                                               rownames = FALSE,
+                                               options = list(
+                                                 pageLength = 11,
+                                                 stripe = FALSE,
+                                                 dom = 't'),
+                                               callback = JS('table.on("init.dt", function() {
+                                                $(".dataTables_wrapper").css({
+                                                  "border": "4px solid #000000",
+                                                  "font-family": "Arial, sans-serif",
+                                                  "font-size": "12px",
+                                                  "font-weight": "bold",
+                                                  "color": "#000000",
+                                                  "text-align": "center"
+                                                });
+                                              })')
+    ))
+
+    ## Permet d'obtenir et d'afficher le score final du match
     output$score <- renderText({
       df = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
       buteur = get_score(df)
@@ -155,6 +203,7 @@ app<-function(...){
       return(res)
     })
 
+    ## Permet d'afficher l'ensemble des buteurs du match
     output$buteursOutput <- renderText({
       df = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
       buteur = get_score(df)
@@ -169,8 +218,15 @@ app<-function(...){
       return(buteurs_html)
       })
 
+    ## Permet d'afficher les statistiques des équipes
+    output$funnel <- renderPlot({
+      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
+      funnel_plot(data)
+    })
+
     # Onglet Vizualisation
 
+    ## Afficher un titre en fonction du plot
     output$titre_plot_viz <- renderUI({
       if(input$choix_plot == "Tirs par équipe"){
         fluidRow(column(12,p(tags$b("Répartition des tirs par équipe", style = "font-size: 150%")),align = "center"))
@@ -181,6 +237,23 @@ app<-function(...){
       }
     })
 
+    ## Permet d'afficher les différents plot de l'onglet visualisation selon la demande de l'utilisateur
+    output$plot1 <- renderPlot({
+      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset))),c("id","index","related_events"))
+      if(input$choix_plot == "Contribution attaquants"){
+        radar_plot(data)
+      }else if(input$choix_plot == "Tirs par équipe"){
+        if(input$periode == "Tout le match"){
+          shot_pitch(data,c(input$debut,input$fin))}
+        else if(input$periode == "1ère période"){
+          shot_pitch(data,c(0,45))}
+        else{shot_pitch(data,c(45,90))}
+      }else if(input$choix_plot == "Heatmap par joueur"){
+        heatmap_player(data,input$Joueur)
+      }
+    })
+
+    ## Permet d'afficher les informations sur les points(qui sont des tirs) dans le premier plot
     output$par_plr_click <- renderPrint({
 
       plr_info_str <- function(click_df) {
@@ -222,21 +295,27 @@ app<-function(...){
                      slice(1))
     })
 
+    ## Permet d'obtenir une liste déroulante avec tous les joueurs qui ont joué le match
+    output$joueur <- renderUI({
+      dom = cbind(get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[1]][3],
+                  get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[1]][1]$player$name)
+      ext = cbind(get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[2]][3],
+                  get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[2]][1]$player$name)
+      data = cbind(dom,ext)
+      colnames(data) = c("Numéros", "Joueurs")
+      selectInput("Joueur", "Choix du joueur", choices = data$Joueurs)
+    })
+
+    # Onglet Data Events
+
+    ## Permet d'obtenir le jeu de données en selectionné par l'utilisateur
     tbl <- reactive({
-      # df = supCol_by_names(get(input$dataset2),c("id","index","related_events"))
-      # colSelected <- input$colSelected
-      # df[-c(1:2),c("period","timestamp","type")]
       df = supCol_by_names(get(paste0("df",which(names_df == input$dataset2))),c("id","index","related_events"))
       df[-c(1:2),]
-      # [-c(1:2),c("timestamp","type","team","duration","player","location")]
-      })
+    })
 
+    ## Affiche le jeu de données séléctionné par l'utilisateur
     output$table <- renderDT({
-      # data(input$dataset2)
-      # df = supCol_by_names(get(input$dataset2),c("id","index","related_events"))
-      # colSelected <- input$colSelected
-      # cat("Colonnes sélectionnées :", colSelected, "\n")  # Message de débogage
-      # df = df[-c(1:2),c("period","timestamp","type",colSelected)]
       datatable(tbl(),
           filter = "none",
           rownames = FALSE,
@@ -252,33 +331,9 @@ app<-function(...){
             scrollCollapse = T,
             columnDefs = list(list(targets = 11, visible = F))))})
 
-    output$joueur <- renderUI({
-      dom = cbind(get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[1]][3],
-                  get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[1]][1]$player$name)
-      ext = cbind(get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[2]][3],
-                  get(paste0("df",which(names_df == input$dataset)))$tactics$lineup[[2]][1]$player$name)
-      data = cbind(dom,ext)
-      colnames(data) = c("Numéros", "Joueurs")
-      selectInput("Joueur", "Choix du joueur", choices = data$Joueurs)# unique(data$player)[-1])
-    })
+    # Onglet Competition
 
-    output$plot1 <- renderPlot({
-      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset))),c("id","index","related_events"))
-      if(input$choix_plot == "Contribution attaquants"){
-        radar_plot(data)
-      }else if(input$choix_plot == "Tirs par équipe"){
-        if(input$periode == "Tout le match"){
-          shot_pitch(data,c(input$debut,input$fin))}
-        else if(input$periode == "1ère période"){
-          shot_pitch(data,c(0,45))}
-        else{shot_pitch(data,c(45,90))}
-      }else if(input$choix_plot == "Heatmap par joueur"){
-        # updateSelectInput(session, "joueurInput", choices = unique(data$player)[-1],selected = unique(data$player)[2])
-        heatmap_player(data,input$Joueur) # ,"Lionel Andrés Messi Cuccittini")
-      }
-    })
-
-
+    ## Permet d'afficher le jeu de données compétition (qui reference toutes les compétitions)
     output$comp <- renderDT(
       datatable(competition,
                 rownames = FALSE,
@@ -294,69 +349,6 @@ app<-function(...){
                   scrollCollapse = T,
                   columnDefs = list(list(targets = 11, visible = F)))))
 
-    tbl2 <- reactive({
-      dom = cbind(get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[1]][3],get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[1]][1]$player$name)
-      colnames(dom) = c("Numéros", "Joueurs")
-      dom
-      })
-
-    tbl3 <- reactive({
-      ext = cbind(get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[2]][3],get(paste0("df",which(names_df == input$dataset3)))$tactics$lineup[[2]][1]$player$name)
-      colnames(ext) = c("Numéros", "Joueurs")
-      ext
-      })
-    output$table_lineup <- renderDT(datatable(tbl2(),
-                                              caption = "Equipe domcile",
-                                              rownames = FALSE,
-                                              options = list(
-                                                pageLength = 11,
-                                                stripe = FALSE,
-                                                dom = 't'),
-                                              callback = JS('table.on("init.dt", function() {
-                                                $(".dataTables_wrapper").css({
-                                                  "border": "4px solid #000000",
-                                                  "font-family": "Arial, sans-serif",
-                                                  "font-size": "12px",
-                                                  "font-weight": "bold",
-                                                  "color": "#000000",
-                                                  "text-align": "center"
-                                                });
-                                              })')
-                                              ))
-
-    output$table_lineup2 <- renderDT(datatable(tbl3(),
-                                              caption = "Equipe extérieur",
-                                              rownames = FALSE,
-                                              options = list(
-                                                pageLength = 11,
-                                                stripe = FALSE,
-                                                dom = 't'),
-                                              callback = JS('table.on("init.dt", function() {
-                                                $(".dataTables_wrapper").css({
-                                                  "border": "4px solid #000000",
-                                                  "font-family": "Arial, sans-serif",
-                                                  "font-size": "12px",
-                                                  "font-weight": "bold",
-                                                  "color": "#000000",
-                                                  "text-align": "center"
-                                                });
-                                              })')
-    ))
-
-    output$plot <- renderPlot({
-      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
-      get_lineups(data)
-      })
-
-    output$funnel <- renderPlot({
-      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
-      funnel_plot(data)
-      })
-
-    output$ColSelection <- renderUI({
-      data = supCol_by_names(get(paste0("df",which(names_df == input$dataset2))),c("id","index","related_events"))
-      selectInput("multiSelection", "Selection colonnes", choices = colnames(data), multiple = TRUE)
-    })
   }
 
   # Run the application
