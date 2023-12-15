@@ -15,7 +15,6 @@ app<-function(...){
   library(ggimage)
   library(plotly)
   library(ggthemes)
-  library(emoji)
   library(shinyjs)
 
   data("competition")
