@@ -2,21 +2,6 @@
 #' @export
 app<-function(...){
 
-  library(shiny)
-  library(shinythemes)
-  library(DT)
-  library(tidyverse)
-  library(ggsoccer)
-  library(data.table)
-  library(BasketballAnalyzeR)
-  library(gganimate)
-  library(ggrepel)
-  library(plotly)
-  library(ggimage)
-  library(plotly)
-  library(ggthemes)
-  library(shinyjs)
-
   data("competition")
   data("df1")
   data("df2")
