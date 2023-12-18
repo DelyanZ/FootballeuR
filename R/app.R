@@ -164,7 +164,7 @@ app<-function(...){
     ## Permet d'afficher les compositions d'équipes
     output$plot <- renderPlot({
       data = supCol_by_names(get(paste0("df",which(names_df == input$dataset3))),c("id","index","related_events"))
-      get_lineups(data)
+      get_lineups(data,"inst/assets/jersey.png","inst/assets/jersey2.png")
     })
 
     ## Permet d'obetenir la composition de l'équipe extérieure
