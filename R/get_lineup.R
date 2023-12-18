@@ -1,11 +1,13 @@
 #' Display lineup on a soccer pitch
 #'
 #' @param df A dataframe
+#' @param maillot_dom The path to the image of the jersey
+#' @param maillot_ext The path to the image of the jersey of the visitors
 #'
 #' @return The lineups
 #' @export
 #'
-#' @examples get_lineups(df)
+#' @examples get_lineups(df,maillot_dom,maillot_ext)
 get_lineups = function(df){
   data_lineup = df$tactics[1:2,]
   domicile = df$tactics$lineup[[1]]
@@ -20,7 +22,7 @@ get_lineups = function(df){
     theme_pitch() +
     theme(panel.background = element_rect(fill = "#3ab54a")) +
     geom_image(data=rbind(domicile[,3:5],exterieur[,3:5]),
-               aes(x=x,y=y,image=c(rep("inst/assets/jersey.png",11),rep("inst/assets/jersey2.png",11))), size=.1) +
+               aes(x=x,y=y,image=c(rep(maillot_dom,11),rep(maillot_ext,11))), size=.1) +
     geom_text(
       data = rbind(domicile[,3:5],exterieur[,3:5]),
       aes(x = x, y = y, label = jersey_number),
