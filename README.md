@@ -1,4 +1,4 @@
-# Importer le package FootballeuR et utliser l'application Shiny
+# Importer le package FootballeuR et utiliser l'application Shiny
 
 1) Dans un premier temps, il faut écrire la commande suivante : "devtools::install_github("DelyanZ/FootballeuR")" (pour installer le package depuis github)
 2) Ensuite, il faut faire la commande suivante pour charger le package FootballeuR : "library(FootballeuR)"
