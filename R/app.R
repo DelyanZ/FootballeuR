@@ -2,6 +2,22 @@
 #' @export
 app<-function(...){
 
+  library(data.table)
+  library(DT)
+  library(extrafont)
+  library(ggplot2)
+  library(ggridges)
+  library(ggsoccer)
+  library(gridExtra)
+  library(hms)
+  library(htmltools)
+  library(jsonlite)
+  library(scales)
+  library(shiny)
+  library(shinythemes)
+  library(plotly)
+  library(ggimage)
+  
   data("competition")
   data("df1")
   data("df2")
