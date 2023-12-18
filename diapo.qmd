@@ -68,7 +68,7 @@ heatmap_player(data,"Lionel Andrés Messi Cuccittini")
 Nous affichons maintenant un graphique qui nous donne la presentaion des équipes :
 
 ```{r}
-get_lineups(data)
+get_lineups(data,"inst/assets/jersey.png","inst/assets/jersey2.png")
 ```
 
 ## Performance des joueurs
