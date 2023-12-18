@@ -26,7 +26,6 @@ app<-function(...){
   data("df5")
   names_df = c()
   for(df in paste0("df",1:5)){
-    data(df)
     assign(df, supCol_by_names(get(df),c("id","index","related_events")))
     names_df = c(names_df,updateNameFiles(get(df),"team"))
   }
