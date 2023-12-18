@@ -47,7 +47,6 @@ Depends:
     shiny,
     shinythemes,
     plotly,
-    ggimage
-Depends:
+    ggimage,
     R (>= 2.10)
 lazyData: true
