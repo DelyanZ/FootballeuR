@@ -1,3 +1,8 @@
+## Prérequis : Récupérer l'ensemble du répertoire FootballeuR
+
+Appliquer la commande "git clone https://github.com/DelyanZ/FootballeuR.git" dans votre répertoire en local
+Ensuite dans la session R, modifier le répertoire de travail manuellement ou avec la commande : setwd("chemin/vers/FootballeuR")
+
 # Importer le package FootballeuR et utiliser l'application Shiny
 
 1) Dans un premier temps, il faut écrire la commande suivante : "devtools::install_github("DelyanZ/FootballeuR")" (pour installer le package depuis github)
@@ -6,11 +11,9 @@
 
 # Ouvrir le rapport au format HTML 
 
-1) Appliquer la commande "git clone https://github.com/DelyanZ/FootballeuR.git" dans votre répertoire en local
-2) Ouvrir directement le fichier "rapport.html" dans le répertoire FootballeuR
+Ouvrir directement le fichier "rapport.html" dans le répertoire FootballeuR (préalablement importé en local avec la commande git clone)
 
 # Ouvrir la présentation au format PPTX  
 
-1) Appliquer la commande "git clone https://github.com/DelyanZ/FootballeuR.git" dans votre répertoire en local
-2) Ouvrir directement le fichier "diapo.pptx" dans le répertoire FootballeuR
+Ouvrir directement le fichier "diapo.pptx" dans le répertoire FootballeuR (préalablement importé en local avec la commande git clone)
 
