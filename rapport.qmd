@@ -140,7 +140,7 @@ Finallement voici le rendu final de la fonction get_lineup :
 
 ```{r}
 data = supCol_by_names(df1,c("id","index","related_events"))
-get_lineups(data)
+get_lineups(data,"inst/assets/jersey.png","inst/assets/jersey2.png")
 ```
 
 La fonction utilise les libraries ggplot2, ggsoccer (pour le terrain) et ggimage (pour importer et utiliser les maillots rouges et bleus comme des points).
