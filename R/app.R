@@ -17,6 +17,8 @@ app<-function(...){
   library(shinythemes)
   library(plotly)
   library(ggimage)
+  library(ggthemes)
+  library(dplyr)
   
   data("competition")
   data("df1")
