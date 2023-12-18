@@ -4,10 +4,14 @@
 \alias{get_lineups}
 \title{Display lineup on a soccer pitch}
 \usage{
-get_lineups(df)
+get_lineups(df, maillot_dom, maillot_ext)
 }
 \arguments{
 \item{df}{A dataframe}
+
+\item{maillot_dom}{The path to the image of the jersey}
+
+\item{maillot_ext}{The path to the image of the jersey of the visitors}
 }
 \value{
 The lineups
@@ -16,5 +20,5 @@ The lineups
 Display lineup on a soccer pitch
 }
 \examples{
-get_lineups(df)
+get_lineups(df,maillot_dom,maillot_ext)
 }

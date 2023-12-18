@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples get_lineups(df,maillot_dom,maillot_ext)
-get_lineups = function(df){
+get_lineups = function(df,maillot_dom,maillot_ext){
   data_lineup = df$tactics[1:2,]
   domicile = df$tactics$lineup[[1]]
   exterieur = df$tactics$lineup[[2]]
