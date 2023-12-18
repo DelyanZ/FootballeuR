@@ -1,0 +1,99 @@
+---
+title: "PRÉSENTATION DE NOTRE PROJET FOOTBALLEUR"
+subtitle: "Outils de présentation"
+author: "Gabriel Bour & Délyan Zergua"
+format: 
+  pptx:
+    reference-doc: template.pptx
+---
+
+```{r echo = FALSE, warning=FALSE, results='hide'}
+library(FootballeuR)
+
+library(kableExtra)
+
+library(data.table)
+
+library(ggplot2)
+
+library(tidyverse)
+
+library(ggsoccer)
+
+library(BasketballAnalyzeR)
+
+library(plotly)
+
+library(ggimage)
+
+library(plotly)
+
+library(ggthemes)
+
+library(knitr)
+```
+
+## Obtenir le package FootballeuR
+
+Pour obtenir et commencer à utiliser notre package FootballeuR, rendez-vous à l'adresse suivante : \<https://github.com/DelyanZ/FootballeuR\>.
+
+Le package est aussi disponible en utilisant le fichier \*FootballeuR0.0.0.9000.tar.gz.\*
+
+## Présentation des données
+
+Le package contient pas moins de 50 fichiers de données qui représentent des matchs de Football. Voici un extrait :
+
+```{r}
+data("df1")
+
+data = supCol_by_names(df1,c("id","index","related_events"))
+
+
+data2<-head(data)[,c(2,3,4,5,7)]
+
+tableau<-kable(data2)
+tableau
+```
+
+## Présentation des graphiques : Heatmap par joueur
+
+Exemple d'utilisation de la fonction pour créer des heatmap pour décrire la zone d'activité d'un joueur, nous avons utiisé ici un exemple pour le joueur Lionel Messi. :
+
+```{r}
+heatmap_player(data,"Lionel Andrés Messi Cuccittini")
+```
+
+## Présentation des équipes
+
+Nous affichons maintenant un graphique qui nous donne la presentaion des équipes :
+
+```{r}
+get_lineups(data)
+```
+
+## Performance des joueurs
+
+Voici la présentation d'un graphique appélé radar plot pour voir le niveau global d'un joueur, nous ferons ensuite un zoom sur le joueur luis suarez.
+
+```{r}
+radar_plot(data)[4]
+```
+
+## Présentation des tirs
+
+Nous pouvons également présenter sur un graphique les tirs des deux équipes durant une période donnée.
+
+```{r}
+datanew = supCol_by_names(df1,c("id","index","related_events"))
+shot_pitch(datanew, c(0,90))
+
+```
+
+## Conclusion
+
+Le projet nous a enrichi sur plusieurs points
+
+-   Création d'un package complexe footballeuR
+-   Developpemment d'une application grâce à Rshiny
+
+## 
